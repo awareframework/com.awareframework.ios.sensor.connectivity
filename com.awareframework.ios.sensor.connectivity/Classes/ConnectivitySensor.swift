@@ -51,7 +51,7 @@ public protocol ConnectivityObserver {
 
 public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
 
-    var CONFIG = Config()
+    public var CONFIG = Config()
     
     // location
     var locationManager = CLLocationManager()
