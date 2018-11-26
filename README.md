@@ -1,13 +1,11 @@
 # Aware Connectivity
 
-[![CI Status](https://img.shields.io/travis/tetujin/com.awareframework.ios.sensor.connectivity.svg?style=flat)](https://travis-ci.org/tetujin/com.awareframework.ios.sensor.connectivity)
+[![CI Status](https://img.shields.io/travis/awareframework/com.awareframework.ios.sensor.connectivity.svg?style=flat)](https://travis-ci.org/awareframework/com.awareframework.ios.sensor.connectivity)
 [![Version](https://img.shields.io/cocoapods/v/com.awareframework.ios.sensor.connectivity.svg?style=flat)](https://cocoapods.org/pods/com.awareframework.ios.sensor.connectivity)
 [![License](https://img.shields.io/cocoapods/l/com.awareframework.ios.sensor.connectivity.svg?style=flat)](https://cocoapods.org/pods/com.awareframework.ios.sensor.connectivity)
 [![Platform](https://img.shields.io/cocoapods/p/com.awareframework.ios.sensor.connectivity.svg?style=flat)](https://cocoapods.org/pods/com.awareframework.ios.sensor.connectivity)
 
-## Example
-
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+The Connectivity sensor provides information on the network sensors availability of the device. These include use of Wi-Fi, Bluetooth, GPS, mobile, Push-Notification, Low-Battery mode, Background Refresh status and internet availability. This sensor can be leveraged to detect the availability of wireless sensors and internet on the device at any time. 
 
 ## Requirements
 iOS 10 or later
@@ -27,6 +25,72 @@ import com_awareframework_ios_sensor_connectivity
 ```
 
 3.  Add `UIRequiresPersistentWiFi` to `Info.plist`
+
+
+## Public functions
+
+### ConnectivitySensor
+
++ `init(config:ConnectivitySensor.Config?)` : Initializes the connectivity sensor with the optional configuration.
++ `start()`: Starts the connectivity sensor with the optional configuration.
++ `stop()`: Stops the service.
+
+### ConnectivitySensor.Config
+
+Class to hold the configuration of the sensor.
+
+#### Fields
++ `sensorObserver: ConnectivityObserver`: Callback for live data updates.
++ `enabled: Boolean` Sensor is enabled or not. (default = `false`)
++ `debug: Boolean` enable/disable logging to Xcode console. (default = `false`)
++ `label: String` Label for the data. (default = "")
++ `deviceId: String` Id of the device that will be associated with the events and the sensor. (default = "")
++ `dbEncryptionKey` Encryption key for the database. (default = `null`)
++ `dbType: Engine` Which db engine to use for saving data. (default = `Engine.DatabaseType.NONE`)
++ `dbPath: String` Path of the database. (default = "aware_gyroscope")
++ `dbHost: String` Host for syncing the database. (default = `null`)
+
+## Broadcasts
+
+### Fired Broadcasts
+
++ `Network.ACTION_AWARE_WIFI_ON`: fired when Wi-Fi is activated.
++ `Network.ACTION_AWARE_WIFI_OFF`: fired when Wi-Fi is deactivated.
++ `Network.ACTION_AWARE_MOBILE_ON`: fired when mobile network is activated.
++ `Network.ACTION_AWARE_MOBILE_OFF`: fired when mobile network is deactivated.
++ `Network.ACTION_AWARE_BLUETOOTH_ON`: fired when Bluetooth is activated.
++ `Network.ACTION_AWARE_BLUETOOTH_OFF`: fired when Bluetooth is deactivated.
++ `Network.ACTION_AWARE_GPS_ON`: fired when GPS is activated.
++ `Network.ACTION_AWARE_GPS_OFF`: fired when GPS is deactivated.
++ `Network.ACTION_AWARE_INTERNET_AVAILABLE`: fired when the device is connected to the internet. One extra is included to provide the active internet access network:
+  + `Network.EXTRA_ACCESS`: an integer with one of the following constants: 1=Wi-Fi, 4=Mobile
++ `Network.ACTION_AWARE_INTERNET_UNAVAILABLE`: fired when the device is not connected to the internet.
+
+### Received Broadcasts
+
++ `ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_START`: received broadcast to start the sensor.
++ `ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_STOP`: received broadcast to stop the sensor.
++ `ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_SYNC`: received broadcast to send sync attempt to the host.
++ `ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_SET_LABEL`: received broadcast to set the data label. Label is expected in the `ConnectivitySensor.EXTRA_LABEL` field of the intent extras.
+
+## Data Representations
+
+### Connectivity Data
+
+Contains the connectivity data.
+
+| Field     | Type   | Description                                                                                         |
+| --------- | ------ | --------------------------------------------------------------------------------------------------- |
+| type      | Int    | the connectivity type, one of the following: `-1=AIRPLANE, 1=WIFI, 2=BLUETOOTH, 3=GPS, 4=MOBILE, 5=WIMAX, 6=PUSH_NOTIFICATION, 7=LOW_POWER_MODE, 8=BACKGROUND_REFRESH` |
+| subtype   | String | the text label of the type, one of the following: `AIRPLANE, WIFI, BLUETOOTH, GPS, MOBILE, WIMAX, PUSH_NOTIFICATION, LOW_POWER_MODE, BACKGROUND_REFRESH`   |
+| state     | Int    | the network status `1=ON, 0=OFF`                                                                    |
+| deviceId  | String | AWARE device UUID                                                                                   |
+| label     | String | Customizable label. Useful for data calibration or traceability                                     |
+| timestamp | Long   | unixtime milliseconds since 1970                                                                    |
+| timezone  | Int    | Timezone of the device                                                |
+| os        | String | Operating system of the device (e.g., ios)                                                        |
+
+NOTE: iOS does not support AIRPLANE(-1) and WIMAX(5).
 
 ## Example usage
 ```swift
@@ -100,7 +164,7 @@ class Observer:ConnectivityObserver {
 
 ## Author
 
-Yuuki Nishiyama, tetujin@ht.sfc.keio.ac.jp
+Yuuki Nishiyama, yuuki.nishiyama@oulu.fi
 
 ## License
 
