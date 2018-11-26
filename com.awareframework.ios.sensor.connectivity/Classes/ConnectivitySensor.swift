@@ -69,16 +69,21 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
     var timer:Timer? = nil
     
     public class Config:SensorConfig{
+        
         public var sensorObserver:ConnectivityObserver?
-        public var interval:Double = 1.0
+        
+        public var interval:Int = 10 // min
         
         public override init(){
             super.init()
             dbPath = "aware_connectivity"
         }
         
-        public convenience init(_ json:JSON){
+        public convenience init(_ config:Dictionary<String,Any>){
             self.init()
+            if let interval = config["interval"] as? Int {
+                self.interval = interval
+            }
         }
         
         public func apply(closure:(_ config: ConnectivitySensor.Config) -> Void) -> Self {
@@ -165,7 +170,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
         
         // WiFi Module
         if timer == nil {
-            timer = Timer.scheduledTimer(withTimeInterval: self.CONFIG.interval, repeats: true, block: { t in
+            timer = Timer.scheduledTimer(withTimeInterval: Double(self.CONFIG.interval), repeats: true, block: { t in
                 // WiFi
                 if self.LAST_WIFI_STATUS != NetworkManager.wifiEnabled() {
                     if NetworkManager.wifiEnabled(){

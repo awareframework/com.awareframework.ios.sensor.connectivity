@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = 'com.awareframework.ios.sensor.connectivity'
   s.version          = '0.1.2'
-  s.summary          = 'A short description of com.awareframework.ios.sensor.connectivity.'
+  s.summary          = 'Connectivity Sensing Module for AWARE Framework'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+The Connectivity sensor provides information on the network sensors availability of the device. These include use of Wi-Fi, Bluetooth, GPS, mobile, Push-Notification, Low-Battery mode, Background Refresh status and internet availability. This sensor can be leveraged to detect the availability of wireless sensors and internet on the device at any time.
                        DESC
 
   s.homepage         = 'https://github.com/awareframework/com.awareframework.ios.sensor.connectivity'

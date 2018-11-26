@@ -1,4 +1,4 @@
-# Aware Connectivity
+# AWARE: Connectivity
 
 [![CI Status](https://img.shields.io/travis/awareframework/com.awareframework.ios.sensor.connectivity.svg?style=flat)](https://travis-ci.org/awareframework/com.awareframework.ios.sensor.connectivity)
 [![Version](https://img.shields.io/cocoapods/v/com.awareframework.ios.sensor.connectivity.svg?style=flat)](https://cocoapods.org/pods/com.awareframework.ios.sensor.connectivity)
@@ -41,6 +41,7 @@ Class to hold the configuration of the sensor.
 
 #### Fields
 + `sensorObserver: ConnectivityObserver`: Callback for live data updates.
++ `interval: Int` Connectivity check interval in minute (default = `10`)
 + `enabled: Boolean` Sensor is enabled or not. (default = `false`)
 + `debug: Boolean` enable/disable logging to Xcode console. (default = `false`)
 + `label: String` Label for the data. (default = "")
@@ -54,15 +55,15 @@ Class to hold the configuration of the sensor.
 
 ### Fired Broadcasts
 
-+ `Network.ACTION_AWARE_WIFI_ON`: fired when Wi-Fi is activated.
-+ `Network.ACTION_AWARE_WIFI_OFF`: fired when Wi-Fi is deactivated.
-+ `Network.ACTION_AWARE_MOBILE_ON`: fired when mobile network is activated.
-+ `Network.ACTION_AWARE_MOBILE_OFF`: fired when mobile network is deactivated.
-+ `Network.ACTION_AWARE_BLUETOOTH_ON`: fired when Bluetooth is activated.
-+ `Network.ACTION_AWARE_BLUETOOTH_OFF`: fired when Bluetooth is deactivated.
-+ `Network.ACTION_AWARE_GPS_ON`: fired when GPS is activated.
-+ `Network.ACTION_AWARE_GPS_OFF`: fired when GPS is deactivated.
-+ `Network.ACTION_AWARE_INTERNET_AVAILABLE`: fired when the device is connected to the internet. One extra is included to provide the active internet access network:
++ `ConnectivitySensor.ACTION_AWARE_WIFI_ON`: fired when Wi-Fi is activated.
++ `ConnectivitySensor.ACTION_AWARE_WIFI_OFF`: fired when Wi-Fi is deactivated.
++ `ConnectivitySensor.ACTION_AWARE_MOBILE_ON`: fired when mobile network is activated.
++ `ConnectivitySensor.ACTION_AWARE_MOBILE_OFF`: fired when mobile network is deactivated.
++ `ConnectivitySensor.ACTION_AWARE_BLUETOOTH_ON`: fired when Bluetooth is activated.
++ `ConnectivitySensor.ACTION_AWARE_BLUETOOTH_OFF`: fired when Bluetooth is deactivated.
++ `ConnectivitySensor.ACTION_AWARE_GPS_ON`: fired when GPS is activated.
++ `ConnectivitySensor.ACTION_AWARE_GPS_OFF`: fired when GPS is deactivated.
++ `ConnectivitySensor.ACTION_AWARE_INTERNET_AVAILABLE`: fired when the device is connected to the internet. One extra is included to provide the active internet access network:
   + `Network.EXTRA_ACCESS`: an integer with one of the following constants: 1=Wi-Fi, 4=Mobile
 + `Network.ACTION_AWARE_INTERNET_UNAVAILABLE`: fired when the device is not connected to the internet.
 
