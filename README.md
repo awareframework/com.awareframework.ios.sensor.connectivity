@@ -48,7 +48,7 @@ Class to hold the configuration of the sensor.
 + `deviceId: String` Id of the device that will be associated with the events and the sensor. (default = "")
 + `dbEncryptionKey` Encryption key for the database. (default = `null`)
 + `dbType: Engine` Which db engine to use for saving data. (default = `Engine.DatabaseType.NONE`)
-+ `dbPath: String` Path of the database. (default = "aware_gyroscope")
++ `dbPath: String` Path of the database. (default = "aware_connectivity")
 + `dbHost: String` Host for syncing the database. (default = `null`)
 
 ## Broadcasts
@@ -64,8 +64,8 @@ Class to hold the configuration of the sensor.
 + `ConnectivitySensor.ACTION_AWARE_GPS_ON`: fired when GPS is activated.
 + `ConnectivitySensor.ACTION_AWARE_GPS_OFF`: fired when GPS is deactivated.
 + `ConnectivitySensor.ACTION_AWARE_INTERNET_AVAILABLE`: fired when the device is connected to the internet. One extra is included to provide the active internet access network:
-  + `Network.EXTRA_ACCESS`: an integer with one of the following constants: 1=Wi-Fi, 4=Mobile
-+ `Network.ACTION_AWARE_INTERNET_UNAVAILABLE`: fired when the device is not connected to the internet.
+  + `ConnectivitySensor.EXTRA_ACCESS`: an integer with one of the following constants: 1=Wi-Fi, 4=Mobile
++ `ConnectivitySensor.ACTION_AWARE_INTERNET_UNAVAILABLE`: fired when the device is not connected to the internet.
 
 ### Received Broadcasts
 

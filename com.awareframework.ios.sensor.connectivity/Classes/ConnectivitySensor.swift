@@ -493,12 +493,12 @@ extension ConnectivitySensor{
      */
     public static let ACTION_AWARE_NETWORK_TRAFFIC = "ACTION_AWARE_NETWORK_TRAFFIC"
     
-    public static let ACTION_AWARE_CONNECTIVITY_START = "com.awareframework.ios.sensor.connectivity.SENSOR_START"
-    public static let ACTION_AWARE_CONNECTIVITY_STOP = "com.awareframework.ios.sensor.connectivity.SENSOR_STOP"
+    public static let ACTION_AWARE_CONNECTIVITY_START = "com.awareframework.sensor.connectivity.SENSOR_START"
+    public static let ACTION_AWARE_CONNECTIVITY_STOP = "com.awareframework.sensor.connectivity.SENSOR_STOP"
     
-    public static let ACTION_AWARE_CONNECTIVITY_SET_LABEL = "com.awareframework.ios.sensor.connectivity.SET_LABEL"
+    public static let ACTION_AWARE_CONNECTIVITY_SET_LABEL = "com.awareframework.sensor.connectivity.SET_LABEL"
     public static let EXTRA_LABEL = "label"
     
-    public static let ACTION_AWARE_CONNECTIVITY_SYNC = "com.awareframework.ios.sensor.connectivity.SENSOR_SYNC"
+    public static let ACTION_AWARE_CONNECTIVITY_SYNC = "com.awareframework.sensor.connectivity.SENSOR_SYNC"
     
 }
