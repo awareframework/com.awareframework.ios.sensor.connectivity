@@ -256,7 +256,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
     
     public override func sync(force: Bool = false) {
         if let engine = self.dbEngine{
-            engine.startSync(ConnectivityData.TABLE_NAME, DbSyncConfig().apply{config in
+            engine.startSync(ConnectivityData.TABLE_NAME, ConnectivityData.self, DbSyncConfig().apply{config in
                 config.debug = self.CONFIG.debug
             })
             self.notificationCenter.post(name: .actionAwareConnectivitySync , object: nil)
