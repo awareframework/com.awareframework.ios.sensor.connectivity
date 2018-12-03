@@ -10,7 +10,7 @@ import com_awareframework_ios_sensor_core
 
 public class ConnectivityData: AwareObject {
     
-    public static let TABLE_NAME = "CONNECTIVITY_TABLE"
+    public static let TABLE_NAME = "connectivityData"
     
     @objc dynamic public var type: Int = -1
     @objc dynamic public var subtype: String = ""

@@ -14,6 +14,34 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "D00426C906ED7EF175754B7F7211FA3E"
+               BuildableName = "Pods_com_awareframework_ios_sensor_connectivity_Example.framework"
+               BlueprintName = "Pods-com.awareframework.ios.sensor.connectivity_Example"
+               ReferencedContainer = "container:Pods/Pods.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C6FCFDFB92A6AEA7BD7D8609D254ECEB"
+               BuildableName = "Pods_com_awareframework_ios_sensor_connectivity_Tests.framework"
+               BlueprintName = "Pods-com.awareframework.ios.sensor.connectivity_Tests"
+               ReferencedContainer = "container:Pods/Pods.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACCF1AFB9204008FA782"
                BuildableName = "com.awareframework.ios.sensor.connectivity_Example.app"
                BlueprintName = "com.awareframework.ios.sensor.connectivity_Example"

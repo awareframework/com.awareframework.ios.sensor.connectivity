@@ -171,74 +171,12 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
         // WiFi Module
         if timer == nil {
             timer = Timer.scheduledTimer(withTimeInterval: Double(self.CONFIG.interval), repeats: true, block: { t in
-                // WiFi
-                if self.LAST_WIFI_STATUS != NetworkManager.wifiEnabled() {
-                    if NetworkManager.wifiEnabled(){
-                        if self.CONFIG.debug { print(ConnectivitySensor.TAG, "WiFi On") }
-                        if let observer = self.CONFIG.sensorObserver {
-                            observer.onWiFiON()
-                        }
-                        self.saveConnectivityEvent(.wifi, .wifi, .on)
-                        self.notificationCenter.post(name: .actionAwareWifiOn , object: nil)
-                    }else{
-                        if self.CONFIG.debug { print(ConnectivitySensor.TAG, "WiFi Off") }
-                        if let observer = self.CONFIG.sensorObserver {
-                            observer.onWiFiOFF()
-                        }
-                        self.saveConnectivityEvent(.wifi, .wifi, .off)
-                        self.notificationCenter.post(name: .actionAwareWifiOff , object: nil)
-                    }
-                    self.LAST_WIFI_STATUS = NetworkManager.wifiEnabled()
-                }
-                
-                // Notification
-                UNUserNotificationCenter.current().getNotificationSettings( completionHandler: { settings in
-                    if self.LAST_NOTIFICATION_STATE != settings.authorizationStatus{
-                        switch settings.authorizationStatus {
-                        case .authorized:
-                            if self.CONFIG.debug { print(ConnectivitySensor.TAG, "Push Notification On") }
-                            if let observer = self.CONFIG.sensorObserver{
-                                observer.onPushNotificationOn()
-                            }
-                            self.saveConnectivityEvent(.pushNotification, .pushNotification, .on)
-                            self.notificationCenter.post(name: .actionAwarePushNotificationOn , object: nil)
-                            break
-                        case .denied, .notDetermined, .provisional: // iOS 12
-                            if self.CONFIG.debug { print(ConnectivitySensor.TAG, "Push Notification Off") }
-                            if let observer = self.CONFIG.sensorObserver{
-                                observer.onPushNotificationOff()
-                            }
-                            self.saveConnectivityEvent(.pushNotification, .pushNotification, .off)
-                            self.notificationCenter.post(name: .actionAwarePushNotificationOff , object: nil)
-                            break
-                        }
-                        self.LAST_NOTIFICATION_STATE = settings.authorizationStatus
-                    }
-                })
-                
-                if self.LAST_BLUETOOTH_STATE != self.bluetoothManager.state {
-                    switch self.bluetoothManager.state {
-                    case .poweredOn:
-                        if self.CONFIG.debug { print(ConnectivitySensor.TAG, "Bluetooth On") }
-                        if let observer = self.CONFIG.sensorObserver{
-                            observer.onBluetoothON()
-                        }
-                        self.saveConnectivityEvent(.bluetooth, .bluetooth , .on)
-                        self.notificationCenter.post(name: .actionAwareBluetoothOn , object: nil)
-                        break
-                    case .poweredOff, .resetting, .unauthorized, .unknown, .unsupported:
-                        if self.CONFIG.debug { print(ConnectivitySensor.TAG, "Bluetooth Off") }
-                        if let observer = self.CONFIG.sensorObserver{
-                            observer.onBluetoothOFF()
-                        }
-                        self.saveConnectivityEvent(.bluetooth, .bluetooth , .off)
-                        self.notificationCenter.post(name: .actionAwareBluetoothOff , object: nil)
-                        break
-                    }
-                    self.LAST_BLUETOOTH_STATE = self.bluetoothManager.state
-                }
-                
+                self.checkConnectivity(force: false)
             })
+        }else{
+            self.checkConnectivity(force: true)
+            self.changedLowBatteryMode(Notification.init(name: Notification.Name.NSProcessInfoPowerStateDidChange))
+            self.changedBackgroundRefreshState(Notification.init(name: UIApplication.backgroundRefreshStatusDidChangeNotification))
         }
         
         self.notificationCenter.post(name: .actionAwareConnectivityStart , object: nil)
@@ -262,6 +200,76 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
             self.notificationCenter.post(name: .actionAwareConnectivitySync , object: nil)
         }
     }
+    
+    public func checkConnectivity(force:Bool = false){
+        // WiFi
+        if (self.LAST_WIFI_STATUS != NetworkManager.wifiEnabled()) || force == true {
+            if NetworkManager.wifiEnabled(){
+                if self.CONFIG.debug { print(ConnectivitySensor.TAG, "WiFi On") }
+                if let observer = self.CONFIG.sensorObserver {
+                    observer.onWiFiON()
+                }
+                self.saveConnectivityEvent(.wifi, .wifi, .on)
+                self.notificationCenter.post(name: .actionAwareWifiOn , object: nil)
+            }else{
+                if self.CONFIG.debug { print(ConnectivitySensor.TAG, "WiFi Off") }
+                if let observer = self.CONFIG.sensorObserver {
+                    observer.onWiFiOFF()
+                }
+                self.saveConnectivityEvent(.wifi, .wifi, .off)
+                self.notificationCenter.post(name: .actionAwareWifiOff , object: nil)
+            }
+            self.LAST_WIFI_STATUS = NetworkManager.wifiEnabled()
+        }
+        
+        // Notification
+        UNUserNotificationCenter.current().getNotificationSettings( completionHandler: { settings in
+            if (self.LAST_NOTIFICATION_STATE != settings.authorizationStatus) || force == true {
+                switch settings.authorizationStatus {
+                case .authorized:
+                    if self.CONFIG.debug { print(ConnectivitySensor.TAG, "Push Notification On") }
+                    if let observer = self.CONFIG.sensorObserver{
+                        observer.onPushNotificationOn()
+                    }
+                    self.saveConnectivityEvent(.pushNotification, .pushNotification, .on)
+                    self.notificationCenter.post(name: .actionAwarePushNotificationOn , object: nil)
+                    break
+                case .denied, .notDetermined, .provisional: // iOS 12
+                    if self.CONFIG.debug { print(ConnectivitySensor.TAG, "Push Notification Off") }
+                    if let observer = self.CONFIG.sensorObserver{
+                        observer.onPushNotificationOff()
+                    }
+                    self.saveConnectivityEvent(.pushNotification, .pushNotification, .off)
+                    self.notificationCenter.post(name: .actionAwarePushNotificationOff , object: nil)
+                    break
+                }
+                self.LAST_NOTIFICATION_STATE = settings.authorizationStatus
+            }
+        })
+        
+        if (self.LAST_BLUETOOTH_STATE != self.bluetoothManager.state) || force == true  {
+            switch self.bluetoothManager.state {
+            case .poweredOn:
+                if self.CONFIG.debug { print(ConnectivitySensor.TAG, "Bluetooth On") }
+                if let observer = self.CONFIG.sensorObserver{
+                    observer.onBluetoothON()
+                }
+                self.saveConnectivityEvent(.bluetooth, .bluetooth , .on)
+                self.notificationCenter.post(name: .actionAwareBluetoothOn , object: nil)
+                break
+            case .poweredOff, .resetting, .unauthorized, .unknown, .unsupported:
+                if self.CONFIG.debug { print(ConnectivitySensor.TAG, "Bluetooth Off") }
+                if let observer = self.CONFIG.sensorObserver{
+                    observer.onBluetoothOFF()
+                }
+                self.saveConnectivityEvent(.bluetooth, .bluetooth , .off)
+                self.notificationCenter.post(name: .actionAwareBluetoothOff , object: nil)
+                break
+            }
+            self.LAST_BLUETOOTH_STATE = self.bluetoothManager.state
+        }
+    }
+    
     
     
     /// handler for low-power mode events.
