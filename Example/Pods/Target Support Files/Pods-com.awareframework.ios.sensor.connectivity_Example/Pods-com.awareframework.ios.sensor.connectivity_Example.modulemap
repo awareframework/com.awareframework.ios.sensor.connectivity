@@ -1,0 +1,6 @@
+framework module Pods_com_awareframework_ios_sensor_connectivity_Example {
+  umbrella header "Pods-com.awareframework.ios.sensor.connectivity_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}
