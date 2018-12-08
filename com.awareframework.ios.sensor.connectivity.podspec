@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'com.awareframework.ios.sensor.connectivity'
-  s.version       = '0.2.3'
+  s.version       = '0.2.4'
   s.summary          = 'A Connectivity Sensor Module for AWARE Framework'
 
 # This description is used to generate tags and improve search results.
