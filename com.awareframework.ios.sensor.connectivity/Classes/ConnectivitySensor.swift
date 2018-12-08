@@ -73,6 +73,16 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
         public var sensorObserver:ConnectivityObserver?
         
         public var interval:Int = 10 // min
+        {
+            didSet{
+                if self.interval <= 0 {
+                    print("[Connectivity][Illegal Parameter]",
+                          "The 'interval' parameter has to be more than 0.",
+                          "This parameter ('\(self.interval)') is ignored.")
+                    self.interval = oldValue
+                }
+            }
+        }
         
         public override init(){
             super.init()
@@ -199,6 +209,13 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
             })
             self.notificationCenter.post(name: .actionAwareConnectivitySync , object: nil)
         }
+    }
+    
+    public func set(label:String){
+        self.CONFIG.label = label
+        self.notificationCenter.post(name: .actionAwareConnectivitySetLabel,
+                                     object: nil,
+                                     userInfo: [ConnectivitySensor.EXTRA_LABEL:label])
     }
     
     public func checkConnectivity(force:Bool = false){
@@ -499,14 +516,14 @@ extension ConnectivitySensor{
     /**
      * Fired event: updated traffic information is available
      */
-    public static let ACTION_AWARE_NETWORK_TRAFFIC = "ACTION_AWARE_NETWORK_TRAFFIC"
+    public static let ACTION_AWARE_NETWORK_TRAFFIC = "com.awareframework.ios.sensor.connectivity"
     
-    public static let ACTION_AWARE_CONNECTIVITY_START = "com.awareframework.sensor.connectivity.SENSOR_START"
-    public static let ACTION_AWARE_CONNECTIVITY_STOP = "com.awareframework.sensor.connectivity.SENSOR_STOP"
+    public static let ACTION_AWARE_CONNECTIVITY_START = "com.awareframework.ios.sensor.connectivity.SENSOR_START"
+    public static let ACTION_AWARE_CONNECTIVITY_STOP = "com.awareframework.ios.sensor.connectivity.SENSOR_STOP"
     
-    public static let ACTION_AWARE_CONNECTIVITY_SET_LABEL = "com.awareframework.sensor.connectivity.SET_LABEL"
+    public static let ACTION_AWARE_CONNECTIVITY_SET_LABEL = "com.awareframework.ios.sensor.connectivity.SET_LABEL"
     public static let EXTRA_LABEL = "label"
     
-    public static let ACTION_AWARE_CONNECTIVITY_SYNC = "com.awareframework.sensor.connectivity.SENSOR_SYNC"
+    public static let ACTION_AWARE_CONNECTIVITY_SYNC = "com.awareframework.ios.sensor.connectivity.SENSOR_SYNC"
     
 }

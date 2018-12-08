@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'com.awareframework.ios.sensor.connectivity'
-  s.version       = '0.2.2'
+  s.version       = '0.2.3'
   s.summary          = 'A Connectivity Sensor Module for AWARE Framework'
 
 # This description is used to generate tags and improve search results.
@@ -41,5 +41,5 @@ The Connectivity sensor provides information on the network sensors availability
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
   s.frameworks = 'CoreLocation', 'Foundation', 'UserNotifications', 'CoreBluetooth'
-  s.dependency 'com.awareframework.ios.sensor.core', '~> 0.3.1'
+  s.dependency 'com.awareframework.ios.sensor.core', '~> 0.3.3'
 end

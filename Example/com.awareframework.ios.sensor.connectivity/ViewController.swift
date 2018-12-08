@@ -14,13 +14,13 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
-        var sensor = ConnectivitySensor.init(ConnectivitySensor.Config().apply{ config in
-            config.debug = true
-            // config.dbHost = ""
-            config.dbType = .REALM
-        })
-        sensor.start()
+//        
+//        var sensor = ConnectivitySensor.init(ConnectivitySensor.Config().apply{ config in
+//            config.debug = true
+//            // config.dbHost = ""
+//            config.dbType = .REALM
+//        })
+//        sensor.start()
     }
 
     override func didReceiveMemoryWarning() {
