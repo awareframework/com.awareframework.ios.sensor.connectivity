@@ -6,8 +6,9 @@ before_install:
 - gem install cocoapods
 - pod repo update
 - pod install --project-directory=Example
+- xcodebuild -showsdks
 script:
-- set -o pipefail && xcodebuild test -enableCodeCoverage YES -workspace Example/com.awareframework.ios.sensor.connectivity.xcworkspace -scheme com.awareframework.ios.sensor.connectivity_Example -sdk iphonesimulator12.1 -destination OS=12.1,name="iPhone X" ONLY_ACTIVE_ARCH=NO CODE_SIGNING_REQUIRED=NO -allowProvisioningUpdates | xcpretty -c
+- set -o pipefail && xcodebuild test -enableCodeCoverage YES -workspace Example/com.awareframework.ios.sensor.connectivity.xcworkspace -scheme com.awareframework.ios.sensor.connectivity_Example -sdk iphonesimulator12.0 -destination OS=12.1,name="iPhone X" ONLY_ACTIVE_ARCH=NO CODE_SIGNING_REQUIRED=NO -allowProvisioningUpdates | xcpretty -c
 deploy:
   provider: script
   script: "./scripts/release.sh"
