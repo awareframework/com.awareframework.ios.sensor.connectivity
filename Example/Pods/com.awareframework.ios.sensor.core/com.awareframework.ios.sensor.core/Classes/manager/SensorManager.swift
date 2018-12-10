@@ -33,19 +33,21 @@ public class SensorManager: NSObject {
     
     
     public func removeSensors(with type: AnyClass ){
-        for (index, sensor) in sensors.enumerated() {
-            if sensor.classForCoder == type {
-                self.sensors.remove(at: index)
-                self.removeSensors(with: type)
+        for sensor in sensors {
+            if let index = sensors.index(of: sensor) {
+                if sensor.classForCoder == type {
+                    sensors.remove(at: index)
+                }
             }
         }
     }
     
     public func removeSensor(id:String){
-        for (index, sensor) in sensors.enumerated() {
-            if sensor.id == id {
-                self.sensors.remove(at: index)
-                return
+        for sensor in sensors {
+            if let index = sensors.index(of: sensor) {
+                if sensor.id == id {
+                    sensors.remove(at: index)
+                }
             }
         }
     }

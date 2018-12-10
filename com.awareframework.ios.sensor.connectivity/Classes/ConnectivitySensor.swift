@@ -189,7 +189,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
             self.changedBackgroundRefreshState(Notification.init(name: UIApplication.backgroundRefreshStatusDidChangeNotification))
         }
         
-        self.notificationCenter.post(name: .actionAwareConnectivityStart , object: nil)
+        self.notificationCenter.post(name: .actionAwareConnectivityStart , object: self)
     }
     
     public override func stop() {
@@ -199,22 +199,32 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
             uwTimer.invalidate()
             self.timer = nil
         }
-        self.notificationCenter.post(name: .actionAwareConnectivityStop , object: nil)
+        self.notificationCenter.post(name: .actionAwareConnectivityStop , object: self)
     }
     
     public override func sync(force: Bool = false) {
         if let engine = self.dbEngine{
             engine.startSync(ConnectivityData.TABLE_NAME, ConnectivityData.self, DbSyncConfig().apply{config in
                 config.debug = self.CONFIG.debug
+                config.dispatchQueue = DispatchQueue(label: "com.awareframework.ios.sensor.connectivity.sync.queue")
+                config.completionHandler = { (status, error) in
+                    var userInfo: Dictionary<String,Any> = [ConnectivitySensor.EXTRA_STATUS: status]
+                    if let e = error {
+                        userInfo[ConnectivitySensor.EXTRA_ERROR] = e
+                    }
+                    self.notificationCenter.post(name: .actionAwareConnectivitySyncCompletion ,
+                                                 object: self,
+                                                 userInfo:userInfo)
+                }
             })
-            self.notificationCenter.post(name: .actionAwareConnectivitySync , object: nil)
+            self.notificationCenter.post(name: .actionAwareConnectivitySync , object: self)
         }
     }
     
-    public func set(label:String){
+    public override func set(label:String){
         self.CONFIG.label = label
         self.notificationCenter.post(name: .actionAwareConnectivitySetLabel,
-                                     object: nil,
+                                     object: self,
                                      userInfo: [ConnectivitySensor.EXTRA_LABEL:label])
     }
     
@@ -227,14 +237,14 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
                     observer.onWiFiON()
                 }
                 self.saveConnectivityEvent(.wifi, .wifi, .on)
-                self.notificationCenter.post(name: .actionAwareWifiOn , object: nil)
+                self.notificationCenter.post(name: .actionAwareWifiOn , object: self)
             }else{
                 if self.CONFIG.debug { print(ConnectivitySensor.TAG, "WiFi Off") }
                 if let observer = self.CONFIG.sensorObserver {
                     observer.onWiFiOFF()
                 }
                 self.saveConnectivityEvent(.wifi, .wifi, .off)
-                self.notificationCenter.post(name: .actionAwareWifiOff , object: nil)
+                self.notificationCenter.post(name: .actionAwareWifiOff , object: self)
             }
             self.LAST_WIFI_STATUS = NetworkManager.wifiEnabled()
         }
@@ -249,7 +259,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
                         observer.onPushNotificationOn()
                     }
                     self.saveConnectivityEvent(.pushNotification, .pushNotification, .on)
-                    self.notificationCenter.post(name: .actionAwarePushNotificationOn , object: nil)
+                    self.notificationCenter.post(name: .actionAwarePushNotificationOn , object: self)
                     break
                 case .denied, .notDetermined, .provisional: // iOS 12
                     if self.CONFIG.debug { print(ConnectivitySensor.TAG, "Push Notification Off") }
@@ -257,7 +267,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
                         observer.onPushNotificationOff()
                     }
                     self.saveConnectivityEvent(.pushNotification, .pushNotification, .off)
-                    self.notificationCenter.post(name: .actionAwarePushNotificationOff , object: nil)
+                    self.notificationCenter.post(name: .actionAwarePushNotificationOff , object: self)
                     break
                 }
                 self.LAST_NOTIFICATION_STATE = settings.authorizationStatus
@@ -272,7 +282,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
                     observer.onBluetoothON()
                 }
                 self.saveConnectivityEvent(.bluetooth, .bluetooth , .on)
-                self.notificationCenter.post(name: .actionAwareBluetoothOn , object: nil)
+                self.notificationCenter.post(name: .actionAwareBluetoothOn , object: self)
                 break
             case .poweredOff, .resetting, .unauthorized, .unknown, .unsupported:
                 if self.CONFIG.debug { print(ConnectivitySensor.TAG, "Bluetooth Off") }
@@ -280,7 +290,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
                     observer.onBluetoothOFF()
                 }
                 self.saveConnectivityEvent(.bluetooth, .bluetooth , .off)
-                self.notificationCenter.post(name: .actionAwareBluetoothOff , object: nil)
+                self.notificationCenter.post(name: .actionAwareBluetoothOff , object: self)
                 break
             }
             self.LAST_BLUETOOTH_STATE = self.bluetoothManager.state
@@ -300,14 +310,14 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
                 observer.onLowPowerModeON()
             }
             self.saveConnectivityEvent(.lowPowerMode, .lowPowerMode , .on)
-            self.notificationCenter.post(name: .actionAwareLowPowerModeOn , object: nil)
+            self.notificationCenter.post(name: .actionAwareLowPowerModeOn , object: self)
         } else {
             if self.CONFIG.debug { print(ConnectivitySensor.TAG, "Low-Power Mode Off") }
             if let observer = self.CONFIG.sensorObserver{
                 observer.onLowPowerModeOFF()
             }
             self.saveConnectivityEvent(.lowPowerMode, .lowPowerMode , .off)
-            self.notificationCenter.post(name: .actionAwareLowPowerModeOff , object: nil)
+            self.notificationCenter.post(name: .actionAwareLowPowerModeOff , object: self)
         }
     }
     
@@ -320,7 +330,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
                 observer.onGPSON()
             }
             self.saveConnectivityEvent(.gps, .gps, .on)
-            self.notificationCenter.post(name: .actionAwareGPSOn , object: nil)
+            self.notificationCenter.post(name: .actionAwareGPSOn , object: self)
             break
         case .authorizedWhenInUse, .denied, .notDetermined, .restricted:
             if self.CONFIG.debug { print(ConnectivitySensor.TAG, "GPS OFF") }
@@ -328,7 +338,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
                 observer.onGPSOFF()
             }
             self.saveConnectivityEvent(.gps, .gps, .off)
-            self.notificationCenter.post(name: .actionAwareGPSOff , object: nil)
+            self.notificationCenter.post(name: .actionAwareGPSOff , object: self)
             break
         }
     }
@@ -343,7 +353,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
                 observer.onBackgroundRefreshON()
             }
             self.saveConnectivityEvent(.backgroundRefresh, .backgroundRefresh, .on)
-            self.notificationCenter.post(name: .actionAwareBackgroundRefreshOn , object: nil)
+            self.notificationCenter.post(name: .actionAwareBackgroundRefreshOn , object: self)
             break
         case .denied,.restricted:
             if self.CONFIG.debug { print(ConnectivitySensor.TAG, "Background Refresh Off") }
@@ -351,7 +361,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
                 observer.onBackgroundRefreshOFF()
             }
             self.saveConnectivityEvent(.backgroundRefresh, .backgroundRefresh, .off)
-            self.notificationCenter.post(name: .actionAwareBackgroundRefreshOff , object: nil)
+            self.notificationCenter.post(name: .actionAwareBackgroundRefreshOff , object: self)
         }
     }
     
@@ -361,17 +371,22 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
             data.type    = type.rawValue
             data.subtype = subType.rawValue
             data.state   = state.rawValue
-            engine.save(data, ConnectivityData.TABLE_NAME)
+            engine.save(data)
+            self.notificationCenter.post(name: .actionAwareConnectivity, object: self)
         }
     }
     
 }
 
 extension Notification.Name{
+    
+    public static let actionAwareConnectivity = Notification.Name(ConnectivitySensor.ACTION_AWARE_CONNECTIVITY)
+    
     public static let actionAwareConnectivityStart = Notification.Name(ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_START)
     public static let actionAwareConnectivityStop  = Notification.Name(ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_STOP)
     public static let actionAwareConnectivitySetLabel = Notification.Name(ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_SET_LABEL)
     public static let actionAwareConnectivitySync  = Notification.Name(ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_SYNC)
+    public static let actionAwareConnectivitySyncCompletion  = Notification.Name(ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_SYNC_COMPLETION)
     
     public static let actionAwareInternetAvailable = Notification.Name(ConnectivitySensor.ACTION_AWARE_INTERNET_AVAILABLE)
     public static let actionAwareInternetUnavailable = Notification.Name(ConnectivitySensor.ACTION_AWARE_INTERNET_UNAVAILABLE)
@@ -516,7 +531,7 @@ extension ConnectivitySensor{
     /**
      * Fired event: updated traffic information is available
      */
-    public static let ACTION_AWARE_NETWORK_TRAFFIC = "com.awareframework.ios.sensor.connectivity"
+    public static let ACTION_AWARE_CONNECTIVITY = "com.awareframework.ios.sensor.connectivity"
     
     public static let ACTION_AWARE_CONNECTIVITY_START = "com.awareframework.ios.sensor.connectivity.SENSOR_START"
     public static let ACTION_AWARE_CONNECTIVITY_STOP = "com.awareframework.ios.sensor.connectivity.SENSOR_STOP"
@@ -525,5 +540,8 @@ extension ConnectivitySensor{
     public static let EXTRA_LABEL = "label"
     
     public static let ACTION_AWARE_CONNECTIVITY_SYNC = "com.awareframework.ios.sensor.connectivity.SENSOR_SYNC"
+    public static let ACTION_AWARE_CONNECTIVITY_SYNC_COMPLETION = "com.awareframework.ios.sensor.connectivity.SENSOR_SYNC_COMPLETION"
+    public static let EXTRA_STATUS = "status"
+    public static let EXTRA_ERROR = "error"
     
 }

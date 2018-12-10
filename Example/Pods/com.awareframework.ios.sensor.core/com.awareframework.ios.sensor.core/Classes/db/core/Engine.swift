@@ -17,23 +17,22 @@ public enum DatabaseType {
 
 public protocol EngineProtocal {
     
-    func getAll( ) -> Array<Any>
-    func findById(_ id: String) -> Any
+    func save(_ data:AwareObject)
+    func save(_ data:AwareObject, completion:((Error?)->Void)? )
+    func save(_ data:Array<AwareObject>)
+    func save(_ data:Array<AwareObject>, completion:((Error?)->Void)?)
+    
+    func fetch(_ objectType: Object.Type?, _ filter:String?) -> Any?
+    func fetch(_ objectType: Object.Type?, _ filter:String?, completion:((Any?, Error?)->Void)?)
 
-    func save(_ data:AwareObject, _ tableName:String)
-    func save(_ data:Array<AwareObject>, _ tableName:String)
-    
-    func fetch(_ tableName:String) -> Any?
-    func fetch(_ tableName:String, _ filter:String?) -> Any?
-    func fetch(_ tableName:String, _ objectType: Object.Type?, _ filter:String?) -> Any?
-    
-    func remove(_ data:AwareObject, _ tableName:String)
-    func remove(_ data:Array<AwareObject>, _ tableName:String)
-    func removeAll()
+    func remove(_ objectType: Object.Type?, _ filter:String?)
+    func remove(_ objectType: Object.Type?, _ filter:String?, completion:((Error?)->Void)?)
+   
+    func removeAll(_ objectType: Object.Type?)
+    func removeAll(_ objectType: Object.Type?, completion:((Error?)->Void)?)
     
     func close()
     
-    func startSync(_ tableName:String, _ syncConfig:DbSyncConfig)
     func startSync(_ tableName:String, _ objectType: Object.Type?, _ syncConfig:DbSyncConfig)
     func stopSync()
 }
@@ -99,55 +98,45 @@ open class Engine: EngineProtocal {
         return Builder().build()
     }
     
-    //////////////
-    
-    open func getAll( ) -> Array<Any>{
-        // print("Please orverwrite -getAll()")
-        return Array<Any>()
+    public func save(_ data: AwareObject) {
+        self.save(data, completion:nil)
     }
     
-    open func findById(_ id: String) -> Any {
-        // print("Please orverwrite -findById(id)")
-        return Object()
+    public func save(_ data: Array<AwareObject>) {
+        self.save(data, completion:nil)
     }
     
-    open func save (_ data:AwareObject, _ tableName:String){
+    open func save (_ data:AwareObject,completion:((Error?)->Void)?){
         // print("Please orverwrite -save(objects)")
     }
     
-    open func save (_ data:Array<AwareObject>, _ tableName:String){
+    open func save (_ data:Array<AwareObject>,completion:((Error?)->Void)?){
         // print("Please orverwrite -save(objects)")
     }
     
-    public func fetch(_ tableName: String) -> Any? {
-        // print("Please orverwrite -fetch(tableName)")
-        return self.fetch(tableName, nil)
-    }
     
-    public func fetch(_ tableName: String, _ filter: String?) -> Any? {
-        // print("Please orverwrite -fetch(tableName)")
-        return self.fetch(tableName, nil, filter)
-    }
-    
-    public func fetch(_ tableName: String, _ objectType: Object.Type?, _ filter: String?) -> Any? {
-        // print("Please orverwrite -fetc(type:fileter)")
+    public func fetch(_ objectType: Object.Type?, _ filter: String?) -> Any? {
         return nil
     }
-
-    open func remove(_ data:AwareObject, _ tableName:String) {
-        // print("Please orverwrite -remove(data)")
+    
+    public func fetch(_ objectType: Object.Type?, _ filter: String?, completion: ((Any?, Error?) -> Void)?) {
+        
     }
     
-    open func remove(_ data:Array<AwareObject>, _ tableName:String) {
-        // print("Please orverwrite -remove(data)")
+    public func remove(_ objectType: Object.Type?, _ filter: String?) {
+        self.remove(objectType, filter, completion: nil)
     }
     
-    open func removeAll() {
-        // print("Please overwrite -removeAll()")
+    public func remove(_ objectType: Object.Type?, _ filter: String?, completion: ((Error?) -> Void)?) {
+        
     }
     
-    open func startSync(_ tableName:String, _ syncConfig:DbSyncConfig){
-        // print("Please orverwirte -startSync(tableName:syncConfig)")
+    public func removeAll(_ objectType: Object.Type?) {
+        self.removeAll(objectType, completion: nil)
+    }
+    
+    public func removeAll(_ objectType: Object.Type?, completion: ((Error?) -> Void)?) {
+        
     }
     
     open func startSync(_ tableName:String, _ objectType: Object.Type?, _ syncConfig:DbSyncConfig){

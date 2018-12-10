@@ -1,6 +1,7 @@
 import XCTest
 import RealmSwift
 import com_awareframework_ios_sensor_connectivity
+import com_awareframework_ios_sensor_core
 
 class Tests: XCTestCase {
     
@@ -102,10 +103,13 @@ class Tests: XCTestCase {
         })
         observer.callback = {
             if let engine = sensor.dbEngine {
-                if let results = engine.fetch(ConnectivityData.TABLE_NAME, ConnectivityData.self, nil) as? Results<Object>{
-                    XCTAssertGreaterThanOrEqual(results.count, 1)
-                }else{
-                    XCTFail()
+                engine.fetch(ConnectivityData.self, nil){ (resultsObject, error) in
+                    if let results = resultsObject as? Results<Object>{
+                        XCTAssertGreaterThanOrEqual(results.count, 1)
+                    }else{
+                        XCTFail()
+                    }
+
                 }
             }
         }
@@ -190,11 +194,142 @@ class Tests: XCTestCase {
         XCTAssertEqual(dict["state"] as? Int, 0)
     }
     
-//    func testPerformanceExample() {
-//        // This is an example of a performance test case.
-//        self.measure() {
-//            // Put the code you want to measure the time of here.
-//        }
-//    }
+    func testSyncModule(){
+        #if targetEnvironment(simulator)
+        
+        print("This test requires a real device.")
+        
+        #else
+        // success //
+        let sensor = ConnectivitySensor.init(ConnectivitySensor.Config().apply{ config in
+            config.debug = true
+            config.dbType = .REALM
+            config.dbHost = "node.awareframework.com:1001"
+            config.dbPath = "sync_db"
+        })
+        if let engine = sensor.dbEngine as? RealmEngine {
+            engine.removeAll(ConnectivityData.self)
+            for _ in 0..<100 {
+                engine.save(ConnectivityData())
+            }
+        }
+        let successExpectation = XCTestExpectation(description: "success sync")
+        let observer = NotificationCenter.default.addObserver(forName: Notification.Name.actionAwareConnectivitySyncCompletion,
+                                                              object: sensor, queue: .main) { (notification) in
+                                                                if let userInfo = notification.userInfo{
+                                                                    if let status = userInfo["status"] as? Bool {
+                                                                        if status == true {
+                                                                            successExpectation.fulfill()
+                                                                        }
+                                                                    }
+                                                                }
+        }
+        sensor.sync(force: true)
+        wait(for: [successExpectation], timeout: 20)
+        NotificationCenter.default.removeObserver(observer)
+        
+        ////////////////////////////////////
+        
+        // failure //
+        let sensor2 = ConnectivitySensor.init(ConnectivitySensor.Config().apply{ config in
+            config.debug = true
+            config.dbType = .REALM
+            config.dbHost = "node.awareframework.com.com" // wrong url
+            config.dbPath = "sync_db"
+        })
+        let failureExpectation = XCTestExpectation(description: "failure sync")
+        let failureObserver = NotificationCenter.default.addObserver(forName: Notification.Name.actionAwareConnectivitySyncCompletion,
+                                                                     object: sensor2, queue: .main) { (notification) in
+                                                                        if let userInfo = notification.userInfo{
+                                                                            if let status = userInfo["status"] as? Bool {
+                                                                                if status == false {
+                                                                                    failureExpectation.fulfill()
+                                                                                }
+                                                                            }
+                                                                        }
+        }
+        if let engine = sensor2.dbEngine as? RealmEngine {
+            engine.removeAll(ConnectivityData.self)
+            for _ in 0..<100 {
+                engine.save(ConnectivityData())
+            }
+        }
+        sensor2.sync(force: true)
+        wait(for: [failureExpectation], timeout: 20)
+        NotificationCenter.default.removeObserver(failureObserver)
+        
+        #endif
+    }
     
+    
+    
+    
+    
+    
+    
+    ///////////////////////////////////////////
+    
+    
+    //////////// storage ///////////
+    
+    var realmToken:NotificationToken? = nil
+    
+    func testSensorModule(){
+        
+        #if targetEnvironment(simulator)
+        
+        print("This test requires a real device.")
+        
+        #else
+        
+        let sensor = ConnectivitySensor.init(ConnectivitySensor.Config().apply{ config in
+            config.debug = true
+            config.dbType = .REALM
+            config.dbPath = "sensor_module"
+        })
+        let expect = expectation(description: "sensor module")
+        if let realmEngine = sensor.dbEngine as? RealmEngine {
+            // remove old data
+            realmEngine.removeAll(ConnectivityData.self)
+            // get a RealmEngine Instance
+            if let realm = realmEngine.getRealmInstance() {
+                // set Realm DB observer
+                realmToken = realm.observe { (notification, realm) in
+                    switch notification {
+                    case .didChange:
+                        // check database size
+                        let results = realm.objects(ConnectivityData.self)
+                        print(results.count)
+                        XCTAssertGreaterThanOrEqual(results.count, 1)
+                        realm.invalidate()
+                        expect.fulfill()
+                        self.realmToken = nil
+                        break;
+                    case .refreshRequired:
+                        break;
+                    }
+                }
+            }
+        }
+        
+        var storageExpect:XCTestExpectation? = expectation(description: "sensor storage notification")
+        var token: NSObjectProtocol?
+        token = NotificationCenter.default.addObserver(forName: Notification.Name.actionAwareConnectivity,
+                                                       object: sensor,
+                                                       queue: .main) { (notification) in
+                                                        if let exp = storageExpect {
+                                                            exp.fulfill()
+                                                            storageExpect = nil
+                                                            NotificationCenter.default.removeObserver(token!)
+                                                        }
+                                                        
+        }
+        
+        sensor.start() // start sensor
+        
+        wait(for: [expect,storageExpect!], timeout: 10)
+        sensor.stop()
+        #endif
+    }
+
 }

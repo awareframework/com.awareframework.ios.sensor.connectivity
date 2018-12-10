@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public class AwareUtils{
 
     private static let kDeviceIdKey:String = "com.aware.ios.sensor.core.key.deviceid"
@@ -48,5 +47,3 @@ public class AwareUtils{
         return newHostName
     }
 }
-
-

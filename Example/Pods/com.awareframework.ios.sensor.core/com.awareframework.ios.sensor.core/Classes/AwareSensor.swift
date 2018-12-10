@@ -16,10 +16,11 @@ public protocol ISensorController {
     func enable()
     func disable()
     func stop()
+    func set(label:String)
 }
 
 open class AwareSensor: NSObject,ISensorController {
-    
+
     public let notificationCenter = NotificationCenter.default
     public var syncState  = false
     public var dbEngine: Engine? = nil
@@ -29,6 +30,12 @@ open class AwareSensor: NSObject,ISensorController {
     
     public override init(){
         // print("*** Please do not use this initializer! ***");
+    }
+    
+    deinit {
+        notificationCenter.removeObserver(self,
+                                          name: Notification.Name.Aware.dbSyncRequest ,
+                                          object: nil)
     }
     
     open func initializeDbEngine(config: SensorConfig) {
@@ -55,7 +62,6 @@ open class AwareSensor: NSObject,ISensorController {
     }
     
     open func enable() {
-        // print("addObserver");
         if !syncState {
             notificationCenter.addObserver(self,
                                            selector: #selector(sync),
@@ -67,8 +73,9 @@ open class AwareSensor: NSObject,ISensorController {
     
     open func disable() {
         if syncState {
-            // print("removeObserver");
-            notificationCenter.removeObserver(self, name: Notification.Name.Aware.dbSyncRequest , object: nil)
+            notificationCenter.removeObserver(self,
+                                              name: Notification.Name.Aware.dbSyncRequest ,
+                                              object: nil)
             syncState = false
         }
     }
@@ -76,5 +83,10 @@ open class AwareSensor: NSObject,ISensorController {
     open func isEnabled() -> Bool {
         return syncState
     }
+    
+    open func set(label: String) {
+        // print("*** Please orverwrite -set(label) method! ***");
+    }
+    
 }
 
