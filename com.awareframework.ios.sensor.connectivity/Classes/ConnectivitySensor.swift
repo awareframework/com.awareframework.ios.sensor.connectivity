@@ -371,6 +371,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
             data.type    = type.rawValue
             data.subtype = subType.rawValue
             data.state   = state.rawValue
+            data.label   = self.CONFIG.label
             engine.save(data)
             self.notificationCenter.post(name: .actionAwareConnectivity, object: self)
         }
