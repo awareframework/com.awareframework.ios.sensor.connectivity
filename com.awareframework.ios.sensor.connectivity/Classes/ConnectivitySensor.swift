@@ -13,6 +13,174 @@ import CoreLocation
 import UserNotifications
 import CoreBluetooth
 
+extension Notification.Name{
+    
+    public static let actionAwareConnectivity = Notification.Name(ConnectivitySensor.ACTION_AWARE_CONNECTIVITY)
+    
+    public static let actionAwareConnectivityStart = Notification.Name(ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_START)
+    public static let actionAwareConnectivityStop  = Notification.Name(ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_STOP)
+    public static let actionAwareConnectivitySetLabel = Notification.Name(ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_SET_LABEL)
+    public static let actionAwareConnectivitySync  = Notification.Name(ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_SYNC)
+    public static let actionAwareConnectivitySyncCompletion  = Notification.Name(ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_SYNC_COMPLETION)
+    
+    public static let actionAwareInternetAvailable = Notification.Name(ConnectivitySensor.ACTION_AWARE_INTERNET_AVAILABLE)
+    public static let actionAwareInternetUnavailable = Notification.Name(ConnectivitySensor.ACTION_AWARE_INTERNET_UNAVAILABLE)
+    
+    public static let actionAwareWifiOn = Notification.Name(ConnectivitySensor.ACTION_AWARE_WIFI_ON)
+    public static let actionAwareWifiOff = Notification.Name(ConnectivitySensor.ACTION_AWARE_WIFI_OFF)
+
+    public static let actionAwareGPSOn  = Notification.Name(ConnectivitySensor.ACTION_AWARE_GPS_ON)
+    public static let actionAwareGPSOff = Notification.Name(ConnectivitySensor.ACTION_AWARE_GPS_OFF)
+    
+    public static let actionAwareBluetoothOn  = Notification.Name(ConnectivitySensor.ACTION_AWARE_BLUETOOTH_ON)
+    public static let actionAwareBluetoothOff = Notification.Name(ConnectivitySensor.ACTION_AWARE_BLUETOOTH_OFF)
+    
+    public static let actionAwarePushNotificationOn = Notification.Name(ConnectivitySensor.ACTION_AWARE_PUSH_NOTIFICATION_ON)
+    public static let actionAwarePushNotificationOff = Notification.Name(ConnectivitySensor.ACTION_AWARE_PUSH_NOTIFICATION_OFF)
+    
+    public static let actionAwareLowPowerModeOn = Notification.Name(ConnectivitySensor.ACTION_AWARE_LOW_POWER_MODE_ON)
+    public static let actionAwareLowPowerModeOff = Notification.Name(ConnectivitySensor.ACTION_AWARE_LOW_POWER_MODE_OFF)
+    
+    public static let actionAwareBackgroundRefreshOn = Notification.Name(ConnectivitySensor.ACTION_AWARE_BACKGROUND_REFRESH_ON)
+    public static let actionAwareBackgroundRefreshOff = Notification.Name(ConnectivitySensor.ACTION_AWARE_BACKGROUND_REFRESH_OFF)
+}
+
+public enum ConnectivityEventType:Int {
+    case airplane = -1
+    case wifi   = 1
+    case bluetooth = 2
+    case gps    = 3
+    case mobile = 4
+    case wimax  = 5
+    case pushNotification = 6
+    case lowPowerMode = 7
+    case backgroundRefresh = 8
+}
+
+public enum ConnectivityEventSubType:String {
+    public typealias RawValue = String
+    case airplane = "AIRPLANE"
+    case wifi     = "WIFI"
+    case bluetooth = "BLUETOOTH"
+    case gps    = "GPS"
+    case mobile = "MOBILE"
+    case wimax  = "WIMAX"
+    case pushNotification = "PUSH_NOTIFICATION"
+    case lowPowerMode = "LOW_POWER_MODE"
+    case backgroundRefresh = "BACKGROUND_REFRESH"
+}
+
+public enum ConnectivityEventState:Int {
+    case on = 1
+    case off = 0
+}
+
+extension ConnectivitySensor{
+    public static let TAG = "AWARE::Connectivity"
+    
+    /**
+     * Fired event: airplane is active
+     */
+    public static let ACTION_AWARE_AIRPLANE_ON = "ACTION_AWARE_AIRPLANE_ON"
+    
+    /**
+     * Fired event: airplane is inactive
+     */
+    public static let ACTION_AWARE_AIRPLANE_OFF = "ACTION_AWARE_AIRPLANE_OFF"
+    
+    /**
+     * Fired event: wifi is active
+     */
+    public static let ACTION_AWARE_WIFI_ON = "ACTION_AWARE_WIFI_ON"
+    
+    /**
+     * Fired event: wifi is inactive
+     */
+    public static let ACTION_AWARE_WIFI_OFF = "ACTION_AWARE_WIFI_OFF"
+    
+    /**
+     * Fired event: mobile is active
+     */
+    public static let ACTION_AWARE_MOBILE_ON = "ACTION_AWARE_MOBILE_ON"
+    
+    /**
+     * Fired event: mobile is inactive
+     */
+    public static let ACTION_AWARE_MOBILE_OFF = "ACTION_AWARE_MOBILE_OFF"
+    
+    /**
+     * Fired event: wimax is active
+     */
+    public static let ACTION_AWARE_WIMAX_ON = "ACTION_AWARE_WIMAX_ON"
+    
+    /**
+     * Fired event: wimax is inactive
+     */
+    public static let ACTION_AWARE_WIMAX_OFF = "ACTION_AWARE_WIMAX_OFF"
+    
+    /**
+     * Fired event: bluetooth is active
+     */
+    public static let ACTION_AWARE_BLUETOOTH_ON = "ACTION_AWARE_BLUETOOTH_ON"
+    
+    /**
+     * Fired event: bluetooth is inactive
+     */
+    public static let ACTION_AWARE_BLUETOOTH_OFF = "ACTION_AWARE_BLUETOOTH_OFF"
+    
+    /**
+     * Fired event: GPS is active
+     */
+    public static let ACTION_AWARE_GPS_ON = "ACTION_AWARE_GPS_ON"
+    
+    /**
+     * Fired event: GPS is inactive
+     */
+    public static let ACTION_AWARE_GPS_OFF = "ACTION_AWARE_GPS_OFF"
+    
+    /**
+     * Fired event: internet access is available
+     */
+    public static let ACTION_AWARE_INTERNET_AVAILABLE = "ACTION_AWARE_INTERNET_AVAILABLE"
+    
+    /**
+     * Fired event: internet access is unavailable
+     */
+    public static let ACTION_AWARE_INTERNET_UNAVAILABLE = "ACTION_AWARE_INTERNET_UNAVAILABLE"
+    
+    public static let ACTION_AWARE_BACKGROUND_REFRESH_ON  = "ACTION_AWARE_BACKGROUND_REFRESH_ON"
+    public static let ACTION_AWARE_BACKGROUND_REFRESH_OFF = "ACTION_AWARE_BACKGROUND_REFRESH_OFF"
+    
+    public static let ACTION_AWARE_LOW_POWER_MODE_ON  = "ACTION_AWARE_LOW_POWER_MODE_ON"
+    public static let ACTION_AWARE_LOW_POWER_MODE_OFF = "ACTION_AWARE_LOW_POWER_MODE_OFF"
+    
+    public static let ACTION_AWARE_PUSH_NOTIFICATION_ON  = "ACTION_AWARE_PUSH_NOTIFICATION_ON"
+    public static let ACTION_AWARE_PUSH_NOTIFICATION_OFF = "ACTION_AWARE_PUSH_NOTIFICATION_OFF"
+
+    /**
+     * Extra for ACTION_AWARE_INTERNET_AVAILABLE
+     * String "internet_access"
+     */
+    public static let EXTRA_ACCESS = "internet_access"
+    
+    /**
+     * Fired event: updated traffic information is available
+     */
+    public static let ACTION_AWARE_CONNECTIVITY = "com.awareframework.ios.sensor.connectivity"
+    
+    public static let ACTION_AWARE_CONNECTIVITY_START = "com.awareframework.ios.sensor.connectivity.SENSOR_START"
+    public static let ACTION_AWARE_CONNECTIVITY_STOP = "com.awareframework.ios.sensor.connectivity.SENSOR_STOP"
+    
+    public static let ACTION_AWARE_CONNECTIVITY_SET_LABEL = "com.awareframework.ios.sensor.connectivity.SET_LABEL"
+    public static let EXTRA_LABEL = "label"
+    
+    public static let ACTION_AWARE_CONNECTIVITY_SYNC = "com.awareframework.ios.sensor.connectivity.SENSOR_SYNC"
+    public static let ACTION_AWARE_CONNECTIVITY_SYNC_COMPLETION = "com.awareframework.ios.sensor.connectivity.SENSOR_SYNC_COMPLETION"
+    public static let EXTRA_STATUS = "status"
+    public static let EXTRA_ERROR = "error"
+    
+}
+
 public protocol ConnectivityObserver {
     func onInternetON()
     func onInternetOFF()
@@ -61,7 +229,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
     var LAST_BLUETOOTH_STATE:CBManagerState = .unknown
     
     // network
-    let reachability = Reachability()!
+    let reachability = try! Reachability()
     
     // notification
     var LAST_NOTIFICATION_STATE:UNAuthorizationStatus = .notDetermined
@@ -253,7 +421,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
         UNUserNotificationCenter.current().getNotificationSettings( completionHandler: { settings in
             if (self.LAST_NOTIFICATION_STATE != settings.authorizationStatus) || force == true {
                 switch settings.authorizationStatus {
-                case .authorized:
+                case .authorized, .ephemeral:
                     if self.CONFIG.debug { print(ConnectivitySensor.TAG, "Push Notification On") }
                     if let observer = self.CONFIG.sensorObserver{
                         observer.onPushNotificationOn()
@@ -365,7 +533,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
         }
     }
     
-    private func saveConnectivityEvent(_ type:ConnectivityEventType, _ subType:ConnectivityEventSubType, _ state:ConnectivityEventState ){
+    func saveConnectivityEvent(_ type:ConnectivityEventType, _ subType:ConnectivityEventSubType, _ state:ConnectivityEventState ){
         if let engine = self.dbEngine{
             let data     = ConnectivityData()
             data.type    = type.rawValue
@@ -379,170 +547,4 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
     
 }
 
-extension Notification.Name{
-    
-    public static let actionAwareConnectivity = Notification.Name(ConnectivitySensor.ACTION_AWARE_CONNECTIVITY)
-    
-    public static let actionAwareConnectivityStart = Notification.Name(ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_START)
-    public static let actionAwareConnectivityStop  = Notification.Name(ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_STOP)
-    public static let actionAwareConnectivitySetLabel = Notification.Name(ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_SET_LABEL)
-    public static let actionAwareConnectivitySync  = Notification.Name(ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_SYNC)
-    public static let actionAwareConnectivitySyncCompletion  = Notification.Name(ConnectivitySensor.ACTION_AWARE_CONNECTIVITY_SYNC_COMPLETION)
-    
-    public static let actionAwareInternetAvailable = Notification.Name(ConnectivitySensor.ACTION_AWARE_INTERNET_AVAILABLE)
-    public static let actionAwareInternetUnavailable = Notification.Name(ConnectivitySensor.ACTION_AWARE_INTERNET_UNAVAILABLE)
-    
-    public static let actionAwareWifiOn = Notification.Name(ConnectivitySensor.ACTION_AWARE_WIFI_ON)
-    public static let actionAwareWifiOff = Notification.Name(ConnectivitySensor.ACTION_AWARE_WIFI_OFF)
 
-    public static let actionAwareGPSOn  = Notification.Name(ConnectivitySensor.ACTION_AWARE_GPS_ON)
-    public static let actionAwareGPSOff = Notification.Name(ConnectivitySensor.ACTION_AWARE_GPS_OFF)
-    
-    public static let actionAwareBluetoothOn  = Notification.Name(ConnectivitySensor.ACTION_AWARE_BLUETOOTH_ON)
-    public static let actionAwareBluetoothOff = Notification.Name(ConnectivitySensor.ACTION_AWARE_BLUETOOTH_OFF)
-    
-    public static let actionAwarePushNotificationOn = Notification.Name(ConnectivitySensor.ACTION_AWARE_PUSH_NOTIFICATION_ON)
-    public static let actionAwarePushNotificationOff = Notification.Name(ConnectivitySensor.ACTION_AWARE_PUSH_NOTIFICATION_OFF)
-    
-    public static let actionAwareLowPowerModeOn = Notification.Name(ConnectivitySensor.ACTION_AWARE_LOW_POWER_MODE_ON)
-    public static let actionAwareLowPowerModeOff = Notification.Name(ConnectivitySensor.ACTION_AWARE_LOW_POWER_MODE_OFF)
-    
-    public static let actionAwareBackgroundRefreshOn = Notification.Name(ConnectivitySensor.ACTION_AWARE_BACKGROUND_REFRESH_ON)
-    public static let actionAwareBackgroundRefreshOff = Notification.Name(ConnectivitySensor.ACTION_AWARE_BACKGROUND_REFRESH_OFF)
-}
-
-public enum ConnectivityEventType:Int {
-    case airplane = -1
-    case wifi   = 1
-    case bluetooth = 2
-    case gps    = 3
-    case mobile = 4
-    case wimax  = 5
-    case pushNotification = 6
-    case lowPowerMode = 7
-    case backgroundRefresh = 8
-}
-
-public enum ConnectivityEventSubType:String {
-    public typealias RawValue = String
-    case airplane = "AIRPLANE"
-    case wifi     = "WIFI"
-    case bluetooth = "BLUETOOTH"
-    case gps    = "GPS"
-    case mobile = "MOBILE"
-    case wimax  = "WIMAX"
-    case pushNotification = "PUSH_NOTIFICATION"
-    case lowPowerMode = "LOW_POWER_MODE"
-    case backgroundRefresh = "BACKGROUND_REFRESH"
-}
-
-public enum ConnectivityEventState:Int {
-    case on = 1
-    case off = 0
-}
-
-extension ConnectivitySensor{
-    public static let TAG = "AWARE::Connectivity"
-    
-    /**
-     * Fired event: airplane is active
-     */
-    public static let ACTION_AWARE_AIRPLANE_ON = "ACTION_AWARE_AIRPLANE_ON"
-    
-    /**
-     * Fired event: airplane is inactive
-     */
-    public static let ACTION_AWARE_AIRPLANE_OFF = "ACTION_AWARE_AIRPLANE_OFF"
-    
-    /**
-     * Fired event: wifi is active
-     */
-    public static let ACTION_AWARE_WIFI_ON = "ACTION_AWARE_WIFI_ON"
-    
-    /**
-     * Fired event: wifi is inactive
-     */
-    public static let ACTION_AWARE_WIFI_OFF = "ACTION_AWARE_WIFI_OFF"
-    
-    /**
-     * Fired event: mobile is active
-     */
-    public static let ACTION_AWARE_MOBILE_ON = "ACTION_AWARE_MOBILE_ON"
-    
-    /**
-     * Fired event: mobile is inactive
-     */
-    public static let ACTION_AWARE_MOBILE_OFF = "ACTION_AWARE_MOBILE_OFF"
-    
-    /**
-     * Fired event: wimax is active
-     */
-    public static let ACTION_AWARE_WIMAX_ON = "ACTION_AWARE_WIMAX_ON"
-    
-    /**
-     * Fired event: wimax is inactive
-     */
-    public static let ACTION_AWARE_WIMAX_OFF = "ACTION_AWARE_WIMAX_OFF"
-    
-    /**
-     * Fired event: bluetooth is active
-     */
-    public static let ACTION_AWARE_BLUETOOTH_ON = "ACTION_AWARE_BLUETOOTH_ON"
-    
-    /**
-     * Fired event: bluetooth is inactive
-     */
-    public static let ACTION_AWARE_BLUETOOTH_OFF = "ACTION_AWARE_BLUETOOTH_OFF"
-    
-    /**
-     * Fired event: GPS is active
-     */
-    public static let ACTION_AWARE_GPS_ON = "ACTION_AWARE_GPS_ON"
-    
-    /**
-     * Fired event: GPS is inactive
-     */
-    public static let ACTION_AWARE_GPS_OFF = "ACTION_AWARE_GPS_OFF"
-    
-    /**
-     * Fired event: internet access is available
-     */
-    public static let ACTION_AWARE_INTERNET_AVAILABLE = "ACTION_AWARE_INTERNET_AVAILABLE"
-    
-    /**
-     * Fired event: internet access is unavailable
-     */
-    public static let ACTION_AWARE_INTERNET_UNAVAILABLE = "ACTION_AWARE_INTERNET_UNAVAILABLE"
-    
-    public static let ACTION_AWARE_BACKGROUND_REFRESH_ON  = "ACTION_AWARE_BACKGROUND_REFRESH_ON"
-    public static let ACTION_AWARE_BACKGROUND_REFRESH_OFF = "ACTION_AWARE_BACKGROUND_REFRESH_OFF"
-    
-    public static let ACTION_AWARE_LOW_POWER_MODE_ON  = "ACTION_AWARE_LOW_POWER_MODE_ON"
-    public static let ACTION_AWARE_LOW_POWER_MODE_OFF = "ACTION_AWARE_LOW_POWER_MODE_OFF"
-    
-    public static let ACTION_AWARE_PUSH_NOTIFICATION_ON  = "ACTION_AWARE_PUSH_NOTIFICATION_ON"
-    public static let ACTION_AWARE_PUSH_NOTIFICATION_OFF = "ACTION_AWARE_PUSH_NOTIFICATION_OFF"
-
-    /**
-     * Extra for ACTION_AWARE_INTERNET_AVAILABLE
-     * String "internet_access"
-     */
-    public static let EXTRA_ACCESS = "internet_access"
-    
-    /**
-     * Fired event: updated traffic information is available
-     */
-    public static let ACTION_AWARE_CONNECTIVITY = "com.awareframework.ios.sensor.connectivity"
-    
-    public static let ACTION_AWARE_CONNECTIVITY_START = "com.awareframework.ios.sensor.connectivity.SENSOR_START"
-    public static let ACTION_AWARE_CONNECTIVITY_STOP = "com.awareframework.ios.sensor.connectivity.SENSOR_STOP"
-    
-    public static let ACTION_AWARE_CONNECTIVITY_SET_LABEL = "com.awareframework.ios.sensor.connectivity.SET_LABEL"
-    public static let EXTRA_LABEL = "label"
-    
-    public static let ACTION_AWARE_CONNECTIVITY_SYNC = "com.awareframework.ios.sensor.connectivity.SENSOR_SYNC"
-    public static let ACTION_AWARE_CONNECTIVITY_SYNC_COMPLETION = "com.awareframework.ios.sensor.connectivity.SENSOR_SYNC_COMPLETION"
-    public static let EXTRA_STATUS = "status"
-    public static let EXTRA_ERROR = "error"
-    
-}
