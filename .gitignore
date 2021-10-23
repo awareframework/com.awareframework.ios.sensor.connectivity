@@ -37,5 +37,5 @@ Carthage/Build
 #Pods/
 
 Example/Podfile.lock
-#Example/Pods/
+Example/Pods/
 #Example/com.awareframework.ios.sensor.connectivity.xcworkspace/
