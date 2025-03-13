@@ -39,3 +39,8 @@ Carthage/Build
 Example/Podfile.lock
 Example/Pods/*
 #Example/com.awareframework.ios.sensor.connectivity.xcworkspace/
+
+.build
+Packages
+.swiftpm
+.*.sw?
