@@ -14,15 +14,19 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "git@github.com:awareframework/com.awareframework.ios.sensor.core.git", from: "0.7.7")
+        .package(url: "https://github.com/awareframework/com.awareframework.ios.core.git", from: "1.1.0")
     ],
     targets: [
         .target(
             name: "com.awareframework.ios.sensor.connectivity",
             dependencies: [
-                .product(name: "com.awareframework.ios.sensor.core", package: "com.awareframework.ios.sensor.core", condition: .when(platforms: [.iOS]))
+                .product(name: "com.awareframework.ios.core", package: "com.awareframework.ios.core", condition: .when(platforms: [.iOS]))
             ],
-            path: "com.awareframework.ios.sensor.connectivity/Classes"
+            path: "Sources/com.awareframework.ios.sensor.connectivity"
+        ),
+        .testTarget(
+            name: "com.awareframework.ios.sensor.connectivityTests",
+            dependencies: ["com.awareframework.ios.core", "com.awareframework.ios.sensor.connectivity"]
         )
     ],
     swiftLanguageModes: [.v5]

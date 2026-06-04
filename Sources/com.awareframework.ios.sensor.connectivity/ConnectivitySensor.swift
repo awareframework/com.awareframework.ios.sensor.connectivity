@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import com_awareframework_ios_sensor_core
+import com_awareframework_ios_core
 import SwiftyJSON
 import Reachability
 import CoreLocation
@@ -372,7 +372,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
     
     public override func sync(force: Bool = false) {
         if let engine = self.dbEngine{
-            engine.startSync(ConnectivityData.TABLE_NAME, ConnectivityData.self, DbSyncConfig().apply{config in
+            engine.startSync(DbSyncConfig().apply{config in
                 config.debug = self.CONFIG.debug
                 config.dispatchQueue = DispatchQueue(label: "com.awareframework.ios.sensor.connectivity.sync.queue")
                 config.completionHandler = { (status, error) in
@@ -535,12 +535,12 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
     
     func saveConnectivityEvent(_ type:ConnectivityEventType, _ subType:ConnectivityEventSubType, _ state:ConnectivityEventState ){
         if let engine = self.dbEngine{
-            let data     = ConnectivityData()
+            var data     = ConnectivityData()
             data.type    = type.rawValue
             data.subtype = subType.rawValue
             data.state   = state.rawValue
             data.label   = self.CONFIG.label
-            engine.save(data)
+            engine.save([data])
             self.notificationCenter.post(name: .actionAwareConnectivity, object: self)
         }
     }
