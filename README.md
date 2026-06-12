@@ -82,16 +82,17 @@ Class to hold the configuration of the sensor.
 
 Contains the connectivity data.
 
-| Field     | Type   | Description                                                                                         |
-| --------- | ------ | --------------------------------------------------------------------------------------------------- |
-| type      | Int    | the connectivity type, one of the following: `-1=AIRPLANE, 1=WIFI, 2=BLUETOOTH, 3=GPS, 4=MOBILE, 5=WIMAX, 6=PUSH_NOTIFICATION, 7=LOW_POWER_MODE, 8=BACKGROUND_REFRESH` |
-| subtype   | String | the text label of the type, one of the following: `AIRPLANE, WIFI, BLUETOOTH, GPS, MOBILE, WIMAX, PUSH_NOTIFICATION, LOW_POWER_MODE, BACKGROUND_REFRESH`   |
-| state     | Int    | the network status `1=ON, 0=OFF`                                                                    |
-| deviceId  | String | AWARE device UUID                                                                                   |
-| label     | String | Customizable label. Useful for data calibration or traceability                                     |
-| timestamp | Long   | unixtime milliseconds since 1970                                                                    |
-| timezone  | Int    | Timezone of the device                                                |
-| os        | String | Operating system of the device (e.g., ios)                                                        |
+| Field       | Type   | Description                                                                                         |
+| ----------- | ------ | --------------------------------------------------------------------------------------------------- |
+| type        | Int    | the connectivity type, one of the following: `-1=AIRPLANE, 1=WIFI, 2=BLUETOOTH, 3=GPS, 4=MOBILE, 5=WIMAX, 6=PUSH_NOTIFICATION, 7=LOW_POWER_MODE, 8=BACKGROUND_REFRESH` |
+| subtype     | String | the text label of the type, one of the following: `AIRPLANE, WIFI, BLUETOOTH, GPS, MOBILE, WIMAX, PUSH_NOTIFICATION, LOW_POWER_MODE, BACKGROUND_REFRESH`   |
+| state       | Int    | the network status `1=ON, 0=OFF`                                                                    |
+| deviceId    | String | AWARE device UUID                                                                                   |
+| label       | String | Customizable label. Useful for data calibration or traceability                                     |
+| timestamp   | Int64  | unixtime milliseconds since 1970                                                                    |
+| timezone    | Int    | Timezone of the device                                                                              |
+| os          | String | Operating system of the device (e.g., ios)                                                          |
+| jsonVersion | Int    | JSON schema version                                                                                 |
 
 NOTE: iOS does not support AIRPLANE(-1) and WIMAX(5).
 
@@ -99,7 +100,6 @@ NOTE: iOS does not support AIRPLANE(-1) and WIMAX(5).
 ```swift
 let connectivity = ConnectivitySensor.init(ConnectivitySensor.Config().apply{config in
     config.debug  = true
-    config.dbType = .REALM
     config.sensorObserver = Observer()
 })
 connectivity?.start()

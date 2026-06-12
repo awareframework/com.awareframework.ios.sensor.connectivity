@@ -10,7 +10,7 @@ public struct ConnectivityData: BaseDbModelSQLite {
     public var timezone: Int = AwareUtils.getTimeZone()
     public var os: String = "iOS"
     public var jsonVersion: Int = 1
-    public static let databaseTableName = "connectivityData"
+    public static let databaseTableName = "ios_connectivity"
 
     public var type: Int = 0
     public var subtype: String = ""

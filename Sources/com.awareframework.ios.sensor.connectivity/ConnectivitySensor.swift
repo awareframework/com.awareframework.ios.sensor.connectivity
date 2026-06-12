@@ -318,11 +318,12 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
                                                selector: #selector(changedBackgroundRefreshState(_:)),
                                                name: UIApplication.backgroundRefreshStatusDidChangeNotification,
                                                object: nil)
-        
 
-        
+        super.syncConfig = DbSyncConfig().apply { c in
+            c.dispatchQueue = DispatchQueue(label: "com.awareframework.ios.sensor.connectivity.sync.queue")
+        }
     }
-    
+
     deinit {
          NotificationCenter.default.removeObserver(self,
                                                    name: Notification.Name.NSProcessInfoPowerStateDidChange,
@@ -371,22 +372,15 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
     }
     
     public override func sync(force: Bool = false) {
-        if let engine = self.dbEngine{
-            engine.startSync(DbSyncConfig().apply{config in
-                config.debug = self.CONFIG.debug
-                config.dispatchQueue = DispatchQueue(label: "com.awareframework.ios.sensor.connectivity.sync.queue")
-                config.completionHandler = { (status, error) in
-                    var userInfo: Dictionary<String,Any> = [ConnectivitySensor.EXTRA_STATUS: status]
-                    if let e = error {
-                        userInfo[ConnectivitySensor.EXTRA_ERROR] = e
-                    }
-                    self.notificationCenter.post(name: .actionAwareConnectivitySyncCompletion ,
-                                                 object: self,
-                                                 userInfo:userInfo)
-                }
-            })
-            self.notificationCenter.post(name: .actionAwareConnectivitySync , object: self)
+        guard let engine = self.dbEngine, let syncConfig = self.syncConfig else { return }
+        syncConfig.debug = self.CONFIG.debug
+        syncConfig.completionHandler = { (status, error) in
+            var userInfo: Dictionary<String,Any> = [ConnectivitySensor.EXTRA_STATUS: status]
+            if let e = error { userInfo[ConnectivitySensor.EXTRA_ERROR] = e }
+            self.notificationCenter.post(name: .actionAwareConnectivitySyncCompletion, object: self, userInfo: userInfo)
         }
+        engine.startSync(syncConfig)
+        self.notificationCenter.post(name: .actionAwareConnectivitySync, object: self)
     }
     
     public override func set(label:String){
