@@ -530,6 +530,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
     func saveConnectivityEvent(_ type:ConnectivityEventType, _ subType:ConnectivityEventSubType, _ state:ConnectivityEventState ){
         if let engine = self.dbEngine{
             var data     = ConnectivityData()
+            data.timestamp = Int64(Date().timeIntervalSince1970 * 1000)
             data.type    = type.rawValue
             data.subtype = subType.rawValue
             data.state   = state.rawValue
