@@ -2,7 +2,7 @@
 
 [![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 
-The Connectivity sensor provides information on the network sensors availability of the device. These include use of Wi-Fi, Bluetooth, GPS, mobile, Push-Notification, Low-Battery mode, Background Refresh status and internet availability. This sensor can be leveraged to detect the availability of wireless sensors and internet on the device at any time. 
+The Connectivity sensor provides information on the network sensors availability of the device. These include use of Wi-Fi, Bluetooth, GPS, mobile, Push-Notification, Low-Battery mode, Background Refresh status and internet availability. This sensor can be leveraged to detect the availability of wireless sensors and internet on the device at any time.
 
 ## Requirements
 iOS 13 or later
@@ -14,7 +14,7 @@ You can integrate this framework into your project via Swift Package Manager (Sw
 
 ### SwiftPM
 1. Open Package Manager Windows
-    * Open `Xcode` -> Select `Menu Bar` -> `File` -> `App Package Dependencies...` 
+    * Open `Xcode` -> Select `Menu Bar` -> `File` -> `App Package Dependencies...`
 
 2. Find the package using the manager
     * Select `Search Package URL` and type `git@github.com:awareframework/com.awareframework.ios.sensor.connectivity.git`
@@ -29,11 +29,11 @@ import com_awareframework_ios_sensor_connectivity
 5.  Add `UIRequiresPersistentWiFi` to `Info.plist`
 
 
-## Public functions
+## Public Functions
 
 ### ConnectivitySensor
 
-+ `init(config:ConnectivitySensor.Config?)` : Initializes the connectivity sensor with the optional configuration.
++ `init(config:ConnectivitySensor.Config?)`: Initializes the connectivity sensor with the optional configuration.
 + `start()`: Starts the connectivity sensor with the optional configuration.
 + `stop()`: Stops the service.
 
@@ -42,16 +42,17 @@ import com_awareframework_ios_sensor_connectivity
 Class to hold the configuration of the sensor.
 
 #### Fields
+
 + `sensorObserver: ConnectivityObserver`: Callback for live data updates.
-+ `interval: Int` Connectivity check interval in minute (default = `10`)
-+ `enabled: Boolean` Sensor is enabled or not. (default = `false`)
-+ `debug: Boolean` enable/disable logging to Xcode console. (default = `false`)
-+ `label: String` Label for the data. (default = "")
-+ `deviceId: String` Id of the device that will be associated with the events and the sensor. (default = "")
-+ `dbEncryptionKey` Encryption key for the database. (default = `null`)
-+ `dbType: Engine` Which db engine to use for saving data. (default = `Engine.DatabaseType.NONE`)
-+ `dbPath: String` Path of the database. (default = "aware_connectivity")
-+ `dbHost: String` Host for syncing the database. (default = `null`)
++ `sampleIntervalSeconds: Int`: Connectivity check interval in seconds (default = `600`)
++ `enabled: Bool`: Sensor is enabled or not. (default = `false`)
++ `debug: Bool`: Enable/disable logging. (default = `false`)
++ `label: String`: Label for the data. (default = `""`)
++ `deviceId: String`: Id of the device that will be associated with the events and the sensor. (default = `""`)
++ `dbEncryptionKey: String?`: Encryption key for the database. (default = `nil`)
++ `dbType: DatabaseType`: Which db engine to use for saving data. (default = `.none`)
++ `dbPath: String`: Path of the database. (default = `"aware_connectivity"`)
++ `dbHost: String?`: Host for syncing the database. (default = `nil`)
 
 ## Broadcasts
 
@@ -96,9 +97,9 @@ Contains the connectivity data.
 
 NOTE: iOS does not support AIRPLANE(-1) and WIMAX(5).
 
-## Example usage
+## Example Usage
 ```swift
-let connectivity = ConnectivitySensor.init(ConnectivitySensor.Config().apply{config in
+let connectivity = ConnectivitySensor.init(ConnectivitySensor.Config().apply { config in
     config.debug  = true
     config.sensorObserver = Observer()
 })

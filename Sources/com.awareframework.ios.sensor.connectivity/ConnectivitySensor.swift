@@ -240,14 +240,14 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
         
         public var sensorObserver:ConnectivityObserver?
         
-        public var interval:Int = 10 // min
+        public var sampleIntervalSeconds:Int = 600
         {
             didSet{
-                if self.interval <= 0 {
+                if self.sampleIntervalSeconds <= 0 {
                     print("[Connectivity][Illegal Parameter]",
-                          "The 'interval' parameter has to be more than 0.",
-                          "This parameter ('\(self.interval)') is ignored.")
-                    self.interval = oldValue
+                          "The 'sampleIntervalSeconds' parameter has to be more than 0.",
+                          "This parameter ('\(self.sampleIntervalSeconds)') is ignored.")
+                    self.sampleIntervalSeconds = oldValue
                 }
             }
         }
@@ -259,8 +259,8 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
         
         public convenience init(_ config:Dictionary<String,Any>){
             self.init()
-            if let interval = config["interval"] as? Int {
-                self.interval = interval
+            if let sampleIntervalSeconds = config["sampleIntervalSeconds"] as? Int {
+                self.sampleIntervalSeconds = sampleIntervalSeconds
             }
         }
         
@@ -349,7 +349,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
         
         // WiFi Module
         if timer == nil {
-            timer = Timer.scheduledTimer(withTimeInterval: Double(self.CONFIG.interval), repeats: true, block: { t in
+            timer = Timer.scheduledTimer(withTimeInterval: Double(self.CONFIG.sampleIntervalSeconds), repeats: true, block: { t in
                 self.checkConnectivity(force: false)
             })
         }else{
@@ -541,5 +541,4 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
     }
     
 }
-
 
