@@ -166,6 +166,13 @@ class Observer:ConnectivityObserver {
 }
 ```
 
+## Related Links
+
+- [Core Location | Apple Developer Documentation](https://developer.apple.com/documentation/corelocation)
+- [Core Bluetooth | Apple Developer Documentation](https://developer.apple.com/documentation/corebluetooth)
+- [UserNotifications | Apple Developer Documentation](https://developer.apple.com/documentation/usernotifications)
+- [ProcessInfo | Apple Developer Documentation](https://developer.apple.com/documentation/foundation/processinfo)
+
 ## Author
 
 Yuuki Nishiyama (The University of Tokyo), nishiyama@csis.u-tokyo.ac.jp
