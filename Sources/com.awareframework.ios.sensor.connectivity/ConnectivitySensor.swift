@@ -254,6 +254,7 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
         
         public override init(){
             super.init()
+            dbTableName = ConnectivityData.databaseTableName
             dbPath = "aware_connectivity"
         }
         
@@ -274,10 +275,32 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
         self.init(ConnectivitySensor.Config())
     }
     
+
+    /// Creates this sensor's table if it does not exist yet, so that the first save does not fail.
+    /// Failures are logged: without the table, the data cannot be saved or uploaded.
+    private func initializeTables() {
+        guard CONFIG.dbType == .sqlite else { return }
+        guard let queue = (dbEngine as? SQLiteEngine)?.getSQLiteInstance() else {
+            print(ConnectivitySensor.TAG, "[Error] Cannot open the database '\(CONFIG.dbPath)'. The table is not created.")
+            return
+        }
+        let tables: [(name: String, create: () throws -> Void)] = [
+            (ConnectivityData.databaseTableName, { try ConnectivityData.createTable(queue: queue) }),
+        ]
+        for table in tables {
+            do {
+                try table.create()
+            } catch {
+                print(ConnectivitySensor.TAG, "[Error] Cannot create the table '\(table.name)': \(error)")
+            }
+        }
+    }
+
     public init(_ config:ConnectivitySensor.Config){
         super.init()
         CONFIG = config
         initializeDbEngine(config: config)
+        initializeTables()
         
         /// reachability ///
         reachability.whenReachable = { reachability in
