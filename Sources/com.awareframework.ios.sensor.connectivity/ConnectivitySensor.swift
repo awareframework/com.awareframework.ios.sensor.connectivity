@@ -454,6 +454,13 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
                     self.saveConnectivityEvent(.pushNotification, .pushNotification, .off)
                     self.notificationCenter.post(name: .actionAwarePushNotificationOff , object: self)
                     break
+                @unknown default:
+                    if self.CONFIG.debug { print(ConnectivitySensor.TAG, "Push Notification Off") }
+                    if let observer = self.CONFIG.sensorObserver{
+                        observer.onPushNotificationOff()
+                    }
+                    self.saveConnectivityEvent(.pushNotification, .pushNotification, .off)
+                    self.notificationCenter.post(name: .actionAwarePushNotificationOff , object: self)
                 }
                 self.LAST_NOTIFICATION_STATE = settings.authorizationStatus
             }
@@ -477,6 +484,13 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
                 self.saveConnectivityEvent(.bluetooth, .bluetooth , .off)
                 self.notificationCenter.post(name: .actionAwareBluetoothOff , object: self)
                 break
+            @unknown default:
+                if self.CONFIG.debug { print(ConnectivitySensor.TAG, "Bluetooth Off") }
+                if let observer = self.CONFIG.sensorObserver{
+                    observer.onBluetoothOFF()
+                }
+                self.saveConnectivityEvent(.bluetooth, .bluetooth , .off)
+                self.notificationCenter.post(name: .actionAwareBluetoothOff , object: self)
             }
             self.LAST_BLUETOOTH_STATE = self.bluetoothManager.state
         }
@@ -525,6 +539,13 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
             self.saveConnectivityEvent(.gps, .gps, .off)
             self.notificationCenter.post(name: .actionAwareGPSOff , object: self)
             break
+        @unknown default:
+            if self.CONFIG.debug { print(ConnectivitySensor.TAG, "GPS OFF") }
+            if let observer = self.CONFIG.sensorObserver{
+                observer.onGPSOFF()
+            }
+            self.saveConnectivityEvent(.gps, .gps, .off)
+            self.notificationCenter.post(name: .actionAwareGPSOff , object: self)
         }
     }
     
@@ -541,6 +562,13 @@ public class ConnectivitySensor: AwareSensor, CLLocationManagerDelegate {
             self.notificationCenter.post(name: .actionAwareBackgroundRefreshOn , object: self)
             break
         case .denied,.restricted:
+            if self.CONFIG.debug { print(ConnectivitySensor.TAG, "Background Refresh Off") }
+            if let observer = self.CONFIG.sensorObserver {
+                observer.onBackgroundRefreshOFF()
+            }
+            self.saveConnectivityEvent(.backgroundRefresh, .backgroundRefresh, .off)
+            self.notificationCenter.post(name: .actionAwareBackgroundRefreshOff , object: self)
+        @unknown default:
             if self.CONFIG.debug { print(ConnectivitySensor.TAG, "Background Refresh Off") }
             if let observer = self.CONFIG.sensorObserver {
                 observer.onBackgroundRefreshOFF()
